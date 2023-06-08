@@ -1,0 +1,181 @@
+ADDITION ==
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<xc.h>
+void main()
+{
+int a,b,add=0;
+a=0x04;
+b=0x02;
+add=a+b;
+TRISD=0;
+PORTD=add;
+}
+ARRAY ADDITION ==
+
+ #include<stdio.h>
+#include<stdlib.h>
+#include<xc.h>
+void main()
+{
+int a[]={0,1,2,3,4,5,6,7,8,9};
+int sum=0;
+for(int i=0;i<=10;i++)
+{
+sum=sum+a[i];
+}
+TRISD=0;
+PORTD=sum;
+}
+
+MULTIPLICATION & DIVISION ==
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<xc.h>
+void main()
+{
+int mul,div;
+mul=0x02 * 0x02;
+div=0x04 / 0x02;
+TRISD=0;
+TRISC=0;
+PORTD=mul;
+PORTC=div;
+}
+
+LED==
+#include<xc.h>
+#define mybit PORTBbits.RB4
+void delay();
+void main()
+{
+TRISB=0;
+while(1)
+{
+mybit=1;
+delay();
+mybit=0;
+delay();
+}
+}
+void delay()
+{
+T0CON=0x01;
+TMR0H=0xFF;
+TMR0L=0x00;
+T0CONbits.TMR0ON=1;
+while(INTCONbits.TMR0IF==0)
+{
+T0CONbits.TMR0ON=1;
+}
+INTCONbits.TMR0IF=0;
+}
+
+BUZZER ==
+ #include<xc.h>
+#define buzzer PORTBbits.RB7
+void delay(void);
+void main()
+{
+TRISB=0;
+while(1)
+{
+buzzer=1;
+delay();
+buzzer=0;
+delay();
+}
+}
+void delay()
+{
+T0CON=0x01;
+T0CON=0x01;
+TMR0H=0xFF;
+TMR0L=0x00;
+T0CONbits.TMR0ON=1;
+while(INTCONbits.TMR0IF==0)
+{
+T0CONbits.TMR0ON=1;
+}
+INTCONbits.TMR0IF=0;
+}
+
+LCD==
+ #include<xc.h>
+#define RS PORTCbits.RC0
+#define EN PORTCbits.RC1
+char string1[]={'R','U','T','U','J','A'};
+char string2[]={'J','A','D','H','A','V'};
+void delay()
+{
+int i;
+for(i=0;i<5000;i++);
+}
+void sendCmd(char cmd)
+{
+RS=0;
+delay();
+EN=1;
+delay();
+PORTB=cmd;
+delay();
+EN=0;
+delay();
+}
+void sendData(char data)
+{
+RS=1;
+delay();
+EN=1;
+delay();
+PORTB=data;
+delay();
+EN=0;
+delay();
+}
+void main()
+{
+char p,i;
+TRISB=0;
+TRISCbits.RC0=0;
+TRISCbits.RC1=0;
+sendCmd(0x38);
+sendCmd(0x0E);
+sendCmd(0x01);
+while(1)
+{
+sendCmd(0x80);
+for(i=0;i<6;i++)
+{
+p=string1[i];
+sendData(p);
+}
+sendCmd(0xC0);
+for(i=0;i<6;i++)
+{
+p=string2[i];
+sendData(p);
+}
+delay();
+}
+}
+
+Arduino==
+void setup() {
+  // put your setup code here, to run once:
+pinMode(3,OUTPUT);
+pinMode(4,OUTPUT);
+}
+void loop() {
+  // put your main code here, to run repeatedly:
+digitalWrite(3,HIGH);
+delay(1000);
+digitalWrite(3,LOW);
+delay(1000);
+digitalWrite(4,HIGH);
+delay(2000);
+digitalWrite(4,LOW);
+delay(2000);
+}
